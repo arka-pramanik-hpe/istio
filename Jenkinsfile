@@ -77,7 +77,7 @@ pipeline {
 			steps {
 				echo "Log Stash: istio Build Pipeline - Publish"
 				publishDockerUtilityImage( imageTag: env.IMAGE_TAG,
-									imageName: "pilot"
+									imageName: "pilot",
 									repository: "cray",
 									imageVersioned: "istio/pilot:{$TAG}"
 									)

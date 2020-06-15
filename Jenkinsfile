@@ -40,8 +40,6 @@ pipeline {
 		IMAGE_TAG = getDockerImageTag(version: "${VERSION}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
 		IYUM_REPO_MAIN_BRANCH = "cray-master"
 		PRODUCT = "shasta-standard,shasta-premium"
-		TARGET_OS = "noos"
-		TARGET_ARCH = "noarch"
 		RELEASE_TAG = setReleaseTag()
 		BUILD_WITH_CONTAINER = "1"
 	}
@@ -73,6 +71,10 @@ pipeline {
 
 		// Publish
 		stage('Publish') {
+			environment {
+				TARGET_OS = "noos"
+				TARGET_ARCH = "noarch"
+			}
 			steps {
 				echo "Log Stash: istio Build Pipeline - Publish"
 				publishDockerUtilityImage( imageTag: env.IMAGE_TAG,
@@ -80,6 +82,7 @@ pipeline {
 									repository: "cray",
 									imageVersioned: "istio/pilot:{$TAG}"
 									)
+				findAndTransferArtifacts()
 			}
 		}
 
@@ -107,7 +110,6 @@ pipeline {
 				"""
 			}
 		}
-
 	}
 
 	post('Post-build steps') {
@@ -116,7 +118,6 @@ pipeline {
 				currentBuild.result = currentBuild.result == null ? "SUCCESS" : currentBuild.result
 			}
 			logstashSend failBuild: false, maxLines: 3000
-			findAndTransferArtifacts()
 		}
 	}
 }

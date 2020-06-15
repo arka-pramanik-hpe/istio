@@ -61,7 +61,7 @@ pipeline {
 		}
 		stage('Tag and Save image') {
 			steps {
-				dockerRetagAndSave(imageReference: "istio/pilot:{$TAG}",
+				dockerRetagAndSave(imageReference: "istio/pilot:${TAG}",
 					imageRepo: "dtr.dev.cray.com",
 					imageName: "pilot",
 					imageTag: "${IMAGE_TAG}",
@@ -80,7 +80,7 @@ pipeline {
 				publishDockerUtilityImage( imageTag: env.IMAGE_TAG,
 									imageName: "pilot",
 									repository: "cray",
-									imageVersioned: "istio/pilot:{$TAG}"
+									imageVersioned: "istio/pilot:${TAG}"
 									)
 				findAndTransferArtifacts()
 			}
@@ -92,21 +92,21 @@ pipeline {
 			steps {
 				// docker rmi will remove the tagged tag without removing the original image
 				sh """
-					docker rmi istio/operator:{$TAG}
-					docker rmi istio/istioctl:{$TAG}
-					docker rmi istio/node-agent-k8s:{$TAG}
-					docker rmi istio/kubectl:{$TAG}
-					docker rmi istio/sidecar_injector:{$TAG}
-					docker rmi istio/galley:{$TAG}
-					docker rmi istio/citadel:{$TAG}
-					docker rmi istio/mixer_codegen:{$TAG}
-					docker rmi istio/mixer:{$TAG}
-					docker rmi istio/test_policybackend:{$TAG}
-					docker rmi istio/app_sidecar:{$TAG}
-					docker rmi istio/app:{$TAG}
-					docker rmi istio/proxyv2:{$TAG}
-					docker rmi istio/proxytproxy:{$TAG}
-					docker rmi istio/pilot:{$TAG}
+					docker rmi istio/operator:${TAG}||true
+					docker rmi istio/istioctl:${TAG}||true
+					docker rmi istio/node-agent-k8s:${TAG}||true
+					docker rmi istio/kubectl:${TAG}||true
+					docker rmi istio/sidecar_injector:${TAG}||true
+					docker rmi istio/galley:${TAG}||true
+					docker rmi istio/citadel:${TAG}||true
+					docker rmi istio/mixer_codegen:${TAG}||true
+					docker rmi istio/mixer:${TAG}||true
+					docker rmi istio/test_policybackend:${TAG}||true
+					docker rmi istio/app_sidecar:${TAG}||true
+					docker rmi istio/app:${TAG}||true
+					docker rmi istio/proxyv2:${TAG}||true
+					docker rmi istio/proxytproxy:${TAG}||true
+					docker rmi istio/pilot:${TAG}||true
 				"""
 			}
 		}

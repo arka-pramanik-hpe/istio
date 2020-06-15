@@ -36,7 +36,7 @@ pipeline {
 		GIT_TAG = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
 		TAG = "${containerId}"
 		BUILD_DATE = "${buildDate}"
-		VERSION = "1.5.4"
+		VERSION = "1.5.4-1.3.0"
 		IMAGE_TAG = getDockerImageTag(version: "${VERSION}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
 		IYUM_REPO_MAIN_BRANCH = "cray-master"
 		PRODUCT = "shasta-standard,shasta-premium"

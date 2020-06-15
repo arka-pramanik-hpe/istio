@@ -21,7 +21,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set -e
+set -e -x
 
 WD=$(dirname "$0")
 WD=$(cd "$WD"; pwd)
@@ -37,7 +37,7 @@ export REPO_ROOT=/work
 # $CONTAINER_OPTIONS becomes an empty arg when quoted, so SC2086 is disabled for the
 # following command only
 # shellcheck disable=SC2086
-"${CONTAINER_CLI}" run --init -it --rm \
+"${CONTAINER_CLI}" run --init -i --rm \
     -u "${UID}:${DOCKER_GID}" \
     --sig-proxy=true \
     ${DOCKER_SOCKET_MOUNT:--v /var/run/docker.sock:/var/run/docker.sock} \

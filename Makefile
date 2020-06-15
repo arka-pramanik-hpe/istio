@@ -118,6 +118,8 @@ RUN = $(CONTAINER_CLI) run -i --sig-proxy=true -u $(UID):$(GID) --rm \
 	$(CONDITIONAL_HOST_MOUNTS) \
 	-w /work $(IMG)
 
+$(info $$RUN is [${RUN}])
+
 MAKE = $(RUN) make --no-print-directory -e -f Makefile.core.mk
 
 %:

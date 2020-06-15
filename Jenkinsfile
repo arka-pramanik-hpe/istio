@@ -49,14 +49,14 @@ pipeline {
 			steps {
 				echo "Log Stash: istio Build Pipeline - Make Build"
 				echo "Make Build"
-				sh "make -d build"
+				sh "make --debug=all build"
 			}
 		}
 		stage('Make Docker') {
 			steps {
 				echo "Log Stash: istio Build Pipeline - Make Build"
 				echo "Make Docker"
-				sh "make -d docker"
+				sh "make --debug=all docker"
 			}
 		}
 		stage('Tag and Save image') {

@@ -38,7 +38,6 @@ pipeline {
 		BUILD_DATE = "${buildDate}"
 		VERSION = "1.5.4"
 		IMAGE_TAG = getDockerImageTag(version: "${VERSION}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
-		BUILD_DATE = "${buildDate}"
 		IYUM_REPO_MAIN_BRANCH = "cray-master"
 		PRODUCT = "shasta-standard,shasta-premium"
 		TARGET_OS = "noos"

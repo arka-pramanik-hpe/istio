@@ -7794,7 +7794,7 @@ apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
   name: istio-multicluster-egressgateway
-  namespace: {{ .Release.Namespace }} 
+  namespace: {{ .Release.Namespace }}
   labels:
 {{ $gateway.labels | toYaml | indent 4 }}
     release: {{ .Release.Name }}
@@ -13022,7 +13022,10 @@ template: |
       value: |
              {{ toJSON .ObjectMeta.Annotations }}
     {{ end }}
-    {{- if .DeploymentMeta.Name }}
+    {{- if (and (index .DeploymentMeta.Labels "job-name") (index .DeploymentMeta.Labels "cronjob-name")) }}
+    - name: ISTIO_META_WORKLOAD_NAME
+      value: {{ (index .DeploymentMeta.Labels "cronjob-name") }}
+    {{- else if .DeploymentMeta.Name }}
     - name: ISTIO_META_WORKLOAD_NAME
       value: {{ .DeploymentMeta.Name }}
     {{ end }}
@@ -15369,6 +15372,21 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
+                    "metrics": {
+                      "tags_to_remove": ["destination_canonical_service", "source_canonical_service", "destination_principal", "source_principal", "connection_security_policy", "grpc_response_status", "source_version", "destination_version", "request_protocol", "source_canonical_revision", "destination_canonical_revision"]
+                    },
+                    "metrics": {
+                      "name": "request_duration_milliseconds",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "request_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "response_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    }
                   }
                 vm_config:
                   vm_id: stats_outbound
@@ -15408,6 +15426,21 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
+                    "metrics": {
+                      "tags_to_remove": ["destination_canonical_service", "source_canonical_service", "destination_principal", "source_principal", "connection_security_policy", "grpc_response_status", "source_version", "destination_version", "request_protocol", "source_canonical_revision", "destination_canonical_revision"]
+                    },
+                    "metrics": {
+                      "name": "request_duration_milliseconds",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "request_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "response_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    }
                   }
                 vm_config:
                   vm_id: stats_inbound
@@ -15448,6 +15481,21 @@ spec:
                     "debug": "false",
                     "stat_prefix": "istio",
                     "disable_host_header_fallback": true,
+                    "metrics": {
+                      "tags_to_remove": ["destination_canonical_service", "source_canonical_service", "destination_principal", "source_principal", "connection_security_policy", "grpc_response_status", "source_version", "destination_version", "request_protocol", "source_canonical_revision", "destination_canonical_revision"]
+                    },
+                    "metrics": {
+                      "name": "request_duration_milliseconds",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "request_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "response_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    }
                   }
                 vm_config:
                   vm_id: stats_outbound
@@ -32431,7 +32479,7 @@ var _chartsIstioTelemetryGrafanaValuesYaml = []byte(`grafana:
     # GF_SMTP_HOST: email-smtp.eu-west-1.amazonaws.com:2587
     # GF_SMTP_FROM_ADDRESS: alerts@mydomain.com
     # GF_SMTP_FROM_NAME: Grafana
-  
+
   envSecrets: {}
     # The key name and ENV name must match in the secrets file.
     # @see https://grafana.com/docs/installation/configuration/#using-environment-variables
@@ -32672,7 +32720,7 @@ rules:
       - get
       - list
       - watch
-  - apiGroups: 
+  - apiGroups:
     - config.istio.io
     - networking.istio.io
     - authentication.istio.io
@@ -32739,7 +32787,7 @@ rules:
       - get
       - list
       - watch
-  - apiGroups: 
+  - apiGroups:
     - config.istio.io
     - networking.istio.io
     - authentication.istio.io
@@ -33012,7 +33060,7 @@ spec:
           secretName: istio.kiali-service-account
 {{- if not .Values.kiali.security.enabled }}
           optional: true
-{{- end }}      
+{{- end }}
       - name: kiali-secret
         secret:
           secretName: {{ .Values.kiali.dashboard.secretName }}
@@ -40322,7 +40370,7 @@ nodeagent:
     # name of authentication provider.
     CA_PROVIDER: ""
     # CA endpoint.
-    CA_ADDR: ""  
+    CA_ADDR: ""
     # names of authentication provider's plugins.
     PLUGINS: ""
 

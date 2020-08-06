@@ -8140,6 +8140,21 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
+                    "metrics": {
+                      "tags_to_remove": ["destination_canonical_service", "source_canonical_service", "destination_principal", "source_principal", "connection_security_policy", "grpc_response_status", "source_version", "destination_version", "request_protocol", "source_canonical_revision", "destination_canonical_revision"]
+                    },
+                    "metrics": {
+                      "name": "request_duration_milliseconds",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "request_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "response_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    }
                   }
                 vm_config:
                   vm_id: stats_outbound
@@ -8172,6 +8187,21 @@ spec:
                   {
                     "debug": "false",
                     "stat_prefix": "istio",
+                    "metrics": {
+                      "tags_to_remove": ["destination_canonical_service", "source_canonical_service", "destination_principal", "source_principal", "connection_security_policy", "grpc_response_status", "source_version", "destination_version", "request_protocol", "source_canonical_revision", "destination_canonical_revision"]
+                    },
+                    "metrics": {
+                      "name": "request_duration_milliseconds",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "request_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "response_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    }
                   }
                 vm_config:
                   vm_id: stats_inbound
@@ -8205,6 +8235,21 @@ spec:
                     "debug": "false",
                     "stat_prefix": "istio",
                     "disable_host_header_fallback": true,
+                    "metrics": {
+                      "tags_to_remove": ["destination_canonical_service", "source_canonical_service", "destination_principal", "source_principal", "connection_security_policy", "grpc_response_status", "source_version", "destination_version", "request_protocol", "source_canonical_revision", "destination_canonical_revision"]
+                    },
+                    "metrics": {
+                      "name": "request_duration_milliseconds",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "request_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    },
+                    "metrics": {
+                      "name": "response_bytes",
+                      "tags_to_remove": ["response_code", "response_flags"],
+                    }
                   }
                 vm_config:
                   vm_id: stats_outbound

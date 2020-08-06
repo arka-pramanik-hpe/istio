@@ -2,7 +2,7 @@
 
 // Defined variables
 def varDate = new Date()
-def buildDate = varDate.format("yyyyMMddHHmmss") 
+def buildDate = varDate.format("yyyyMMddHHmmss")
 def containerId = UUID.randomUUID().toString()
 
 if ("${BRANCH_NAME}" ==~ /PR-.*/) {
@@ -13,7 +13,7 @@ if ("${BRANCH_NAME}" ==~ /PR-.*/) {
 	buildAgent = "dstbranchbuild"
 }
 
-//This pipeline builds all of istio with a fixed section for pilot, then uploads the istio/pilot image to dtr as well as saving it 
+//This pipeline builds all of istio with a fixed section for pilot, then uploads the istio/pilot image to dtr as well as saving it
 pipeline {
     agent { node { label buildAgent } }
 
@@ -66,6 +66,12 @@ pipeline {
 					imageName: "pilot",
 					imageTag: "${IMAGE_TAG}",
 					repository: "cray")
+				dockerRetagAndSave(imageReference: "istio/operator:${TAG}",
+					imageRepo: "dtr.dev.cray.com",
+					imageName: "operator",
+					imageTag: "${IMAGE_TAG}",
+					repository: "cray")
+
 			}
 		}
 
@@ -81,6 +87,11 @@ pipeline {
 									imageName: "pilot",
 									repository: "cray",
 									imageVersioned: "istio/pilot:${TAG}"
+									)
+				publishDockerUtilityImage( imageTag: env.IMAGE_TAG,
+									imageName: "operator",
+									repository: "cray",
+									imageVersioned: "istio/operator:${TAG}"
 									)
 				findAndTransferArtifacts()
 			}

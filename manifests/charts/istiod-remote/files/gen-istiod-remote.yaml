@@ -459,7 +459,10 @@ data:
           value: |
                  {{ toJSON .ObjectMeta.Annotations }}
         {{ end }}
-        {{- if .DeploymentMeta.Name }}
+        {{- if (and (index .DeploymentMeta.Labels "job-name") (index .DeploymentMeta.Labels "cronjob-name")) }}
+        - name: ISTIO_META_WORKLOAD_NAME
+          value: {{ (index .DeploymentMeta.Labels "cronjob-name") }}
+        {{- else if .DeploymentMeta.Name }}
         - name: ISTIO_META_WORKLOAD_NAME
           value: {{ .DeploymentMeta.Name }}
         {{ end }}

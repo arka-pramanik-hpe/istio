@@ -39,7 +39,7 @@ pipeline {
 		VERSION = "1.5.4"
 		IMAGE_TAG = getDockerImageTag(version: "${VERSION}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
 		IYUM_REPO_MAIN_BRANCH = "cray-master"
-		PRODUCT = "shasta-standard,shasta-premium"
+		PRODUCT = "csm"
 		RELEASE_TAG = setReleaseTag()
 		BUILD_WITH_CONTAINER = "1"
 	}

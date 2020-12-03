@@ -1,4 +1,4 @@
-@Library('dst-shared@master') _
+@Library("dst-shared@release/shasta-1.4") _
 
 // Defined variables
 def varDate = new Date()

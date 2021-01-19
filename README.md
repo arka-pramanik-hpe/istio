@@ -1,5 +1,9 @@
 # Istio
 
+SPDX-License-Identifier: apache-2.0 OR mit
+
+HPE-developed code is licensed using the MIT license. Community-developed code is licensed using the Apache-2.0 license.
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/istio/istio)](https://goreportcard.com/report/github.com/istio/istio)
 [![GoDoc](https://godoc.org/istio.io/istio?status.svg)](https://godoc.org/istio.io/istio)
 

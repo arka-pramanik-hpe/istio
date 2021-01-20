@@ -125,12 +125,12 @@ pipeline {
 		stage('Push to github') {
 		    when { allOf {
 		        // Regex can be changed, as exampled above, to only run specific branches instead of all
-		        expression { BRANCH_NAME ==~ /.*/ }
+		        expression { BRANCH_NAME ==~ /(release\/.*|cray-master)/ }
 		    }}
 		    steps {
 		        script {
 		            pushToGithub(
-		                githubRepo: "Cray-HPE/<github repo name>",
+		                githubRepo: "Cray-HPE/istio",
 		                pemSecretId: "githubapp-stash-sync",
 		                githubAppId: "91129",
 		                githubAppInstallationId: "13313749"

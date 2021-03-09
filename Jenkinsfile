@@ -35,14 +35,17 @@ pipeline {
 	environment {
 		GIT_TAG = sh(returnStdout: true, script: "git rev-parse --short HEAD").trim()
 		TAG = "${containerId}"
+		DISTROLESS_TAG = "${containerId}-distroless"
 		BUILD_DATE = "${buildDate}"
 		VERSION = "1.7.8"
 		VARIANT = "cray1"
 		IMAGE_TAG = getDockerImageTag(version: "${VERSION}-${VARIANT}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
+		DISTROLESS_IMAGE_TAG = getDockerImageTag(version: "${VERSION}-${VARIANT}-distroless", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
 		IYUM_REPO_MAIN_BRANCH = "cray-master"
 		PRODUCT = "csm"
 		RELEASE_TAG = setReleaseTag()
 		BUILD_WITH_CONTAINER = "1"
+		DOCKER_BUILD_VARIANTS = "default distroless"
 	}
 
 	stages {
@@ -65,25 +68,6 @@ pipeline {
 				echo "Log Stash: istio Build Pipeline - Make Build"
 				echo "Make Docker"
 				sh "make --debug=all docker"
-			}
-		}
-		stage('Tag and Save image') {
-			steps {
-				dockerRetagAndSave(imageReference: "istio/pilot:${TAG}",
-					imageRepo: "dtr.dev.cray.com",
-					imageName: "pilot",
-					imageTag: "${IMAGE_TAG}",
-					repository: "cray")
-				dockerRetagAndSave(imageReference: "istio/operator:${TAG}",
-					imageRepo: "dtr.dev.cray.com",
-					imageName: "operator",
-					imageTag: "${IMAGE_TAG}",
-					repository: "cray")
-				dockerRetagAndSave(imageReference: "istio/proxyv2:${TAG}",
-					imageRepo: "dtr.dev.cray.com",
-					imageName: "proxyv2",
-					imageTag: "${IMAGE_TAG}",
-					repository: "cray")
 			}
 		}
 
@@ -110,6 +94,21 @@ pipeline {
 									repository: "cray",
 									imageVersioned: "istio/proxyv2:${TAG}"
 									)
+				publishDockerUtilityImage( imageTag: env.DISTROLESS_IMAGE_TAG,
+									imageName: "pilot",
+									repository: "cray",
+									imageVersioned: "istio/pilot:${DISTROLESS_TAG}"
+									)
+				publishDockerUtilityImage( imageTag: env.DISTROLESS_IMAGE_TAG,
+									imageName: "operator",
+									repository: "cray",
+									imageVersioned: "istio/operator:${DISTROLESS_TAG}"
+									)
+				publishDockerUtilityImage( imageTag: env.DISTROLESS_IMAGE_TAG,
+									imageName: "proxyv2",
+									repository: "cray",
+									imageVersioned: "istio/proxyv2:${DISTROLESS_TAG}"
+									)
 				findAndTransferArtifacts()
 			}
 		}
@@ -135,6 +134,22 @@ pipeline {
 					docker rmi istio/proxyv2:${TAG}||true
 					docker rmi istio/proxytproxy:${TAG}||true
 					docker rmi istio/pilot:${TAG}||true
+
+					docker rmi istio/operator:${DISTROLESS_TAG}||true
+					docker rmi istio/istioctl:${DISTROLESS_TAG}||true
+					docker rmi istio/node-agent-k8s:${DISTROLESS_TAG}||true
+					docker rmi istio/kubectl:${DISTROLESS_TAG}||true
+					docker rmi istio/sidecar_injector:${DISTROLESS_TAG}||true
+					docker rmi istio/galley:${DISTROLESS_TAG}||true
+					docker rmi istio/citadel:${DISTROLESS_TAG}||true
+					docker rmi istio/mixer_codegen:${DISTROLESS_TAG}||true
+					docker rmi istio/mixer:${DISTROLESS_TAG}||true
+					docker rmi istio/test_policybackend:${DISTROLESS_TAG}||true
+					docker rmi istio/app_sidecar:${DISTROLESS_TAG}||true
+					docker rmi istio/app:${DISTROLESS_TAG}||true
+					docker rmi istio/proxyv2:${DISTROLESS_TAG}||true
+					docker rmi istio/proxytproxy:${DISTROLESS_TAG}||true
+					docker rmi istio/pilot:${DISTROLESS_TAG}||true
 				"""
 			}
 		}

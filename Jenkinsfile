@@ -46,6 +46,13 @@ pipeline {
 	}
 
 	stages {
+		stage('Make gen-charts') {
+			steps {
+				echo "Log Stash: istio Build Pipeline - Make gen-charts"
+				echo "Make gen-charts"
+				sh "make --debug=all gen-charts"
+			}
+		}
 		stage('Make Build') {
 			steps {
 				echo "Log Stash: istio Build Pipeline - Make Build"

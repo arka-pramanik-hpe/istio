@@ -1,4 +1,4 @@
-@Library("dst-shared@release/shasta-1.4") _
+@Library("dst-shared@master") _
 
 // Defined variables
 def varDate = new Date()
@@ -13,7 +13,7 @@ if ("${BRANCH_NAME}" ==~ /PR-.*/) {
 	buildAgent = "dstbranchbuild"
 }
 
-//This pipeline builds all of istio with a fixed section for pilot, then uploads the istio/pilot image to dtr as well as saving it
+//This pipeline builds all of istio then uploads the istio/operator, pilot, and proxyv2 images to dtr as well as saving them
 pipeline {
     agent { node { label buildAgent } }
 
@@ -37,7 +37,8 @@ pipeline {
 		TAG = "${containerId}"
 		BUILD_DATE = "${buildDate}"
 		VERSION = "1.6.13"
-		IMAGE_TAG = getDockerImageTag(version: "${VERSION}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
+		VARIANT = "cray1"
+		IMAGE_TAG = getDockerImageTag(version: "${VERSION}-${VARIANT}", buildDate: "${BUILD_DATE}", gitTag: "${GIT_TAG}", gitBranch: "${GIT_BRANCH}")
 		IYUM_REPO_MAIN_BRANCH = "cray-master"
 		PRODUCT = "csm"
 		RELEASE_TAG = setReleaseTag()
@@ -71,7 +72,11 @@ pipeline {
 					imageName: "operator",
 					imageTag: "${IMAGE_TAG}",
 					repository: "cray")
-
+				dockerRetagAndSave(imageReference: "istio/proxyv2:${TAG}",
+					imageRepo: "dtr.dev.cray.com",
+					imageName: "proxyv2",
+					imageTag: "${IMAGE_TAG}",
+					repository: "cray")
 			}
 		}
 
@@ -92,6 +97,11 @@ pipeline {
 									imageName: "operator",
 									repository: "cray",
 									imageVersioned: "istio/operator:${TAG}"
+									)
+				publishDockerUtilityImage( imageTag: env.IMAGE_TAG,
+									imageName: "proxyv2",
+									repository: "cray",
+									imageVersioned: "istio/proxyv2:${TAG}"
 									)
 				findAndTransferArtifacts()
 			}

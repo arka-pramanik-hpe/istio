@@ -71,12 +71,12 @@ pipeline {
         script {
           sh "echo TAG=${env.TAG} DISTROLESS_TAG=${env.DISTROLESS_TAG} VARIANT_DISTRO_TAG=${env.VARIANT_DISTRO_TAG} VARIANT_DISTROLESS_TAG=${env.VARIANT_DISTROLESS_TAG}"
 
-          publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE)
-          publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE)
-          publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE)
-          publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE)
-          publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE)
-          publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE)
+          publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.pilot")
+          publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "operator/docker/Dockerfile.operator")
+          publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.proxyv2")
+          publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.pilot")
+          publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE, snykTargetFile: "operator/docker/Dockerfile.operator")
+          publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.proxyv2")
         }
       }
     }

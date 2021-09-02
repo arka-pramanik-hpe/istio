@@ -7,6 +7,10 @@ ARG BASE_VERSION=latest
 # The following section is used as base image if BASE_DISTRIBUTION=default
 FROM gcr.io/istio-release/base:${BASE_VERSION} as default
 
+RUN apt-get -y update && apt-get upgrade -y && apt full-upgrade -y\
+    && rm -rf /var/lib/apt/lists/
+
+
 # The following section is used as base image if BASE_DISTRIBUTION=distroless
 FROM gcr.io/istio-release/distroless:${BASE_VERSION} as distroless
 

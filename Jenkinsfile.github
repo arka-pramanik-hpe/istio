@@ -15,7 +15,7 @@ pipeline {
 
       // Istio build uses these settings.
       TAG = getDockerBuildVersion(isStable: env.IS_STABLE)
-      VERSION = "1.7.8"
+      VERSION = "1.6.13"
       BUILD_WITH_CONTAINER = "1"
       DOCKER_BUILD_VARIANTS = "default distroless"
   }

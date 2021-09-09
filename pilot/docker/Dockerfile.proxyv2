@@ -1,5 +1,5 @@
 # BASE_DISTRIBUTION is used to switch between the old base distribution and distroless base images
-ARG BASE_DISTRIBUTION=default
+ARG BASE_DISTRIBUTION=distroless
 
 # Version is the base image version from the TLD Makefile
 ARG BASE_VERSION=latest
@@ -18,7 +18,7 @@ COPY gcp_envoy_bootstrap.json /var/lib/istio/envoy/gcp_envoy_bootstrap_tmpl.json
 RUN chown -R istio-proxy /var/lib/istio
 
 # The following section is used as base image if BASE_DISTRIBUTION=distroless
-FROM gcr.io/distroless/cc@sha256:f81e5db8287d66b012d874a6f7fea8da5b96d9cc509aa5a9b5d095a604d4bca1 as distroless
+FROM gcr.io/distroless/cc@sha256:627e2aade1375412f5e4d9f9e9ff47049feff37f0214625517a0298dc1d1adb0 as distroless
 
 # TODO(https://github.com/istio/istio/issues/17656) clean up this hack
 COPY --from=default /sbin/xtables-multi /sbin/iptables* /sbin/ip6tables* /sbin/ip /sbin/
@@ -42,7 +42,7 @@ ARG istio_version
 # Install Envoy.
 COPY envoy /usr/local/bin/envoy
 
-# Environment variable indicating the exact proxy sha - for debugging or version-specific configs 
+# Environment variable indicating the exact proxy sha - for debugging or version-specific configs
 ENV ISTIO_META_ISTIO_PROXY_SHA $proxy_version
 # Environment variable indicating the exact build, for debugging
 ENV ISTIO_META_ISTIO_VERSION $istio_version

@@ -1,5 +1,5 @@
 # BASE_DISTRIBUTION is used to switch between the old base distribution and distroless base images
-ARG BASE_DISTRIBUTION=distroless
+ARG BASE_DISTRIBUTION=default
 
 # Version is the base image version from the TLD Makefile
 ARG BASE_VERSION=latest
@@ -7,9 +7,8 @@ ARG BASE_VERSION=latest
 # The following section is used as base image if BASE_DISTRIBUTION=default
 FROM docker.io/istio/base:${BASE_VERSION} as default
 
-# Install the latest sudo with fix for CVE-2021-3156
-# This can likely be removed when updating to newer istio, see commit message.
-RUN apt-get update && apt-get --only-upgrade install sudo
+# Upgrade to the latest versions to fix various CVEs
+RUN sudo apt-get update && sudo apt-get -y upgrade
 
 # Copy Envoy bootstrap templates used by pilot-agent
 COPY envoy_bootstrap_v2.json /var/lib/istio/envoy/envoy_bootstrap_tmpl.json
@@ -18,7 +17,7 @@ COPY gcp_envoy_bootstrap.json /var/lib/istio/envoy/gcp_envoy_bootstrap_tmpl.json
 RUN chown -R istio-proxy /var/lib/istio
 
 # The following section is used as base image if BASE_DISTRIBUTION=distroless
-FROM gcr.io/distroless/cc@sha256:627e2aade1375412f5e4d9f9e9ff47049feff37f0214625517a0298dc1d1adb0 as distroless
+FROM gcr.io/distroless/cc@sha256:f81e5db8287d66b012d874a6f7fea8da5b96d9cc509aa5a9b5d095a604d4bca1 as distroless
 
 # TODO(https://github.com/istio/istio/issues/17656) clean up this hack
 COPY --from=default /sbin/xtables-multi /sbin/iptables* /sbin/ip6tables* /sbin/ip /sbin/

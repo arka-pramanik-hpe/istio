@@ -7,11 +7,11 @@ ARG BASE_VERSION=latest
 # The following section is used as base image if BASE_DISTRIBUTION=default
 FROM docker.io/istio/base:${BASE_VERSION} as default
 
-USER 1337:1337
 
 RUN apt-get -y update && apt-get upgrade -y && apt full-upgrade -y\
     && rm -rf /var/lib/apt/lists/
 
+USER 1337:1337
 # The following section is used as base image if BASE_DISTRIBUTION=distroless
 FROM docker.io/istio/distroless:${BASE_VERSION} as distroless
 WORKDIR /

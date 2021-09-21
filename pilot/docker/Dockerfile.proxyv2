@@ -7,9 +7,10 @@ ARG BASE_VERSION=latest
 # The following section is used as base image if BASE_DISTRIBUTION=default
 FROM docker.io/istio/base:${BASE_VERSION} as default
 
-# Install the latest sudo with fix for CVE-2021-3156
-# This can likely be removed when updating to newer istio, see commit message.
-RUN apt-get update && apt-get --only-upgrade install sudo
+RUN apt-get -y update && apt-get upgrade -y && apt full-upgrade -y\
+    && rm -rf /var/lib/apt/lists/
+
+# The following section is used as base image if BASE_DISTRIBUTION=distroless
 
 # Copy Envoy bootstrap templates used by pilot-agent
 COPY envoy_bootstrap_v2.json /var/lib/istio/envoy/envoy_bootstrap_tmpl.json

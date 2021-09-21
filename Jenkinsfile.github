@@ -1,0 +1,78 @@
+@Library('csm-shared-library') _
+
+pipeline {
+  agent {
+      label "metal-gcp-builder"
+  }
+
+  options {
+      buildDiscarder(logRotator(numToKeepStr: "10"))
+      timestamps()
+  }
+
+  environment {
+      IS_STABLE = getBuildIsStable()
+
+      // Istio build uses these settings.
+      TAG = getDockerBuildVersion(isStable: env.IS_STABLE)
+      VERSION = "1.6.13"
+      BUILD_WITH_CONTAINER = "1"
+      DOCKER_BUILD_VARIANTS = "default"
+  }
+
+  stages {
+    stage('Make gen-charts') {
+      steps {
+        sh "make --debug=all gen-charts"
+      }
+    }
+    stage('Make Build') {
+      steps {
+        sh "make --debug=all build"
+      }
+    }
+    stage('Make Docker') {
+      steps {
+        sh "make --debug=all docker"
+      }
+    }
+
+    stage('Retag') {
+      // Environment is set here because otherwise the values weren't consistent.
+      environment {
+        DISTROLESS_TAG = "${env.TAG}-distroless"
+        VARIANT = "cray2"
+        VARIANT_DISTRO_TAG = "${env.TAG}-${env.VARIANT}"
+        VARIANT_DISTROLESS_TAG = "${env.TAG}-${env.VARIANT}-distroless"
+      }
+
+      steps {
+        sh "echo TAG=${env.TAG} DISTROLESS_TAG=${env.DISTROLESS_TAG} VARIANT_DISTRO_TAG=${env.VARIANT_DISTRO_TAG} VARIANT_DISTROLESS_TAG=${env.VARIANT_DISTROLESS_TAG}"
+
+        sh "docker tag istio/pilot:${env.TAG} istio/pilot:${VARIANT_DISTRO_TAG}"
+        sh "docker tag istio/operator:${env.TAG} istio/operator:${VARIANT_DISTRO_TAG}"
+        sh "docker tag istio/proxyv2:${env.TAG} istio/proxyv2:${VARIANT_DISTRO_TAG}"
+      }
+    }
+
+    stage("Publish") {
+      // Environment is set here because otherwise the values weren't consistent.
+      environment {
+        DISTROLESS_TAG = "${env.TAG}-distroless"
+        VARIANT = "cray2"
+        VARIANT_DISTRO_TAG = "${env.TAG}-${env.VARIANT}"
+        VARIANT_DISTROLESS_TAG = "${env.TAG}-${env.VARIANT}-distroless"
+      }
+
+      steps {
+        script {
+          sh "echo TAG=${env.TAG} DISTROLESS_TAG=${env.DISTROLESS_TAG} VARIANT_DISTRO_TAG=${env.VARIANT_DISTRO_TAG} VARIANT_DISTROLESS_TAG=${env.VARIANT_DISTROLESS_TAG}"
+
+          publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.pilot")
+          publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "operator/docker/Dockerfile.operator")
+          publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.proxyv2")
+        }
+      }
+    }
+  }
+}

@@ -7,14 +7,14 @@ ARG BASE_VERSION=latest
 # The following section is used as base image if BASE_DISTRIBUTION=default
 FROM docker.io/istio/base:${BASE_VERSION} as default
 
+# Upgrade to the latest versions to fix various CVEs
+RUN apt-get -y update && apt-get upgrade -y && apt full-upgrade -y\
+    && rm -rf /var/lib/apt/lists/
+
 USER 1337:1337
-
-# Install the latest sudo with fix for CVE-2021-3156
-# This can likely be removed when updating to newer istio, see commit message.
-RUN sudo apt-get update && sudo apt-get --only-upgrade install sudo
-
 # The following section is used as base image if BASE_DISTRIBUTION=distroless
 FROM gcr.io/distroless/static@sha256:23aa732bba4c8618c0d97c26a72a32997363d591807b0d4c31b0bbc8a774bddf as distroless
+
 WORKDIR /
 
 # This will build the final image based on either default or distroless from above

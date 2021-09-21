@@ -17,7 +17,7 @@ pipeline {
       TAG = getDockerBuildVersion(isStable: env.IS_STABLE)
       VERSION = "1.6.13"
       BUILD_WITH_CONTAINER = "1"
-      DOCKER_BUILD_VARIANTS = "default distroless"
+      DOCKER_BUILD_VARIANTS = "default"
   }
 
   stages {
@@ -52,9 +52,6 @@ pipeline {
         sh "docker tag istio/pilot:${env.TAG} istio/pilot:${VARIANT_DISTRO_TAG}"
         sh "docker tag istio/operator:${env.TAG} istio/operator:${VARIANT_DISTRO_TAG}"
         sh "docker tag istio/proxyv2:${env.TAG} istio/proxyv2:${VARIANT_DISTRO_TAG}"
-        sh "docker tag istio/pilot:${env.DISTROLESS_TAG} istio/pilot:${VARIANT_DISTROLESS_TAG}"
-        sh "docker tag istio/operator:${env.DISTROLESS_TAG} istio/operator:${VARIANT_DISTROLESS_TAG}"
-        sh "docker tag istio/proxyv2:${env.DISTROLESS_TAG} istio/proxyv2:${VARIANT_DISTROLESS_TAG}"
       }
     }
 
@@ -74,9 +71,6 @@ pipeline {
           publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.pilot")
           publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "operator/docker/Dockerfile.operator")
           publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTRO_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.proxyv2")
-          publishCsmDockerImage(image: "istio/pilot", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.pilot")
-          publishCsmDockerImage(image: "istio/operator", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE, snykTargetFile: "operator/docker/Dockerfile.operator")
-          publishCsmDockerImage(image: "istio/proxyv2", tag: env.VARIANT_DISTROLESS_TAG, isStable: env.IS_STABLE, snykTargetFile: "pilot/docker/Dockerfile.proxyv2")
         }
       }
     }

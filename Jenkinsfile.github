@@ -5,6 +5,10 @@ pipeline {
       label "metal-gcp-builder"
   }
 
+  triggers {
+      cron '@weekly'
+  }
+
   options {
       buildDiscarder(logRotator(numToKeepStr: "10"))
       timestamps()
@@ -41,7 +45,7 @@ pipeline {
       // Environment is set here because otherwise the values weren't consistent.
       environment {
         DISTROLESS_TAG = "${env.TAG}-distroless"
-        VARIANT = "cray1"
+        VARIANT = "cray2"
         VARIANT_DISTRO_TAG = "${env.TAG}-${env.VARIANT}"
         VARIANT_DISTROLESS_TAG = "${env.TAG}-${env.VARIANT}-distroless"
       }
@@ -62,7 +66,7 @@ pipeline {
       // Environment is set here because otherwise the values weren't consistent.
       environment {
         DISTROLESS_TAG = "${env.TAG}-distroless"
-        VARIANT = "cray1"
+        VARIANT = "cray2"
         VARIANT_DISTRO_TAG = "${env.TAG}-${env.VARIANT}"
         VARIANT_DISTROLESS_TAG = "${env.TAG}-${env.VARIANT}-distroless"
       }

@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM ubuntu:18.04
 # Base image for debug builds.
 # Built manually uploaded as "istionightly/base_debug"
 

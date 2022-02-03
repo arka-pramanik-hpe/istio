@@ -3,7 +3,7 @@
 
 # The following section is used as base image if BASE_DISTRIBUTION=default
 # hadolint ignore=DL3006
-FROM ubuntu:bionic
+FROM ubuntu:18.04
 
 # Root and istio are not intercepted
 RUN adduser istio-test --system

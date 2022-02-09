@@ -21,7 +21,8 @@ RUN chown -R istio-proxy /var/lib/istio
 # This image is a custom built debian9 distroless image with multiarchitecture support.
 # It is built on the base distroless image, with iptables binary and libraries added
 # The source can be found at https://github.com/istio/distroless/tree/iptables
-FROM gcr.io/istio-release/iptables@sha256:875a2ec94a816dcb3da35fb559ac63cfe0345018a82b396491eb0e0dbbc15f18 as distroless
+# CRAY: Use the latest distroless base image when this is rebuilt.
+FROM gcr.io/istio-release/iptables:latest as distroless
 
 # This will build the final image based on either default or distroless from above
 # hadolint ignore=DL3006

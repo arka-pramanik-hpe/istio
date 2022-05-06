@@ -22,7 +22,7 @@ RUN chown -R istio-proxy /var/lib/istio
 # It is built on the base distroless image, with iptables binary and libraries added
 # The source can be found at https://github.com/istio/distroless/tree/iptables
 # CRAY: Use the latest distroless base image when this is rebuilt.
-FROM gcr.io/istio-release/iptables:latest as distroless
+FROM gcr.io/distroless/cc:latest as distroless
 
 # This will build the final image based on either default or distroless from above
 # hadolint ignore=DL3006

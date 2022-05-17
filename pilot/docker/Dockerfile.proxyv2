@@ -24,19 +24,25 @@ RUN chown -R istio-proxy /var/lib/istio
 # CRAY: Use the latest distroless base image when this is rebuilt.
 FROM gcr.io/distroless/cc:latest as distroless
 
+# TODO(https://github.com/istio/istio/issues/17656) clean up this hack
+COPY --from=default /sbin/xtables-multi /sbin/iptables* /sbin/ip6tables* /sbin/ip /sbin/
+COPY --from=default /usr/lib/x86_64-linux-gnu/xtables/ /usr/lib/x86_64-linux-gnu/xtables
+COPY --from=default /usr/lib/x86_64-linux-gnu/ /usr/lib/x86_64-linux-gnu
+COPY --from=default /etc/iproute2 /etc/iproute2
+
+# Copy Envoy bootstrap templates used by pilot-agent
+COPY --chown=nonroot:nonroot envoy_bootstrap.json /var/lib/istio/envoy/envoy_bootstrap_tmpl.json
+COPY --chown=nonroot:nonroot gcp_envoy_bootstrap.json /var/lib/istio/envoy/gcp_envoy_bootstrap_tmpl.json
+
+WORKDIR /
+
 # This will build the final image based on either default or distroless from above
 # hadolint ignore=DL3006
 FROM ${BASE_DISTRIBUTION}
 
-WORKDIR /
-
 ARG proxy_version
 ARG istio_version
 ARG SIDECAR=envoy
-
-# Copy Envoy bootstrap templates used by pilot-agent
-COPY envoy_bootstrap.json /var/lib/istio/envoy/envoy_bootstrap_tmpl.json
-COPY gcp_envoy_bootstrap.json /var/lib/istio/envoy/gcp_envoy_bootstrap_tmpl.json
 
 # Install Envoy.
 COPY $SIDECAR /usr/local/bin/$SIDECAR

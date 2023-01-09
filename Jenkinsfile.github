@@ -5,6 +5,10 @@ pipeline {
       label "metal-gcp-builder"
   }
 
+  triggers {
+      cron '@weekly'
+  }
+
   options {
       buildDiscarder(logRotator(numToKeepStr: "10"))
       timestamps()

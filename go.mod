@@ -62,9 +62,9 @@ require (
 	github.com/openshift/api v0.0.0-20200713203337-b2494ecb17dd
 	github.com/pkg/errors v0.9.1
 	github.com/pmezard/go-difflib v1.0.0
-	github.com/prometheus/client_golang v1.10.0
+	github.com/prometheus/client_golang v1.11.1
 	github.com/prometheus/client_model v0.2.0
-	github.com/prometheus/common v0.25.0
+	github.com/prometheus/common v0.26.0
 	github.com/prometheus/prometheus v2.5.0+incompatible
 	github.com/ryanuber/go-glob v1.0.0
 	github.com/spf13/cobra v1.2.1
@@ -79,7 +79,7 @@ require (
 	golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20210601080250-7ecdf8ef093b
+	golang.org/x/sys v0.0.0-20210603081109-ebe580a85c40
 	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba
 	gomodules.xyz/jsonpatch/v2 v2.2.0
 	gomodules.xyz/jsonpatch/v3 v3.0.1

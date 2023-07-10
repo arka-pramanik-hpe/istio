@@ -51,14 +51,14 @@ pipeline {
       }
 
       steps {
-        sh "echo TAG=${env.TAG} DISTROLESS_TAG=${env.DISTROLESS_TAG} VARIANT_DISTRO_TAG=${env.VARIANT_DISTRO_TAG} VARIANT_DISTROLESS_TAG=${env.VARIANT_DISTROLESS_TAG}"
-
-        sh "docker tag istio/pilot:${env.TAG} istio/pilot:${VARIANT_DISTRO_TAG}"
-        sh "docker tag istio/operator:${env.TAG} istio/operator:${VARIANT_DISTRO_TAG}"
-        sh "docker tag istio/proxyv2:${env.TAG} istio/proxyv2:${VARIANT_DISTRO_TAG}"
-        sh "docker tag istio/pilot:${env.DISTROLESS_TAG} istio/pilot:${VARIANT_DISTROLESS_TAG}"
-        sh "docker tag istio/operator:${env.DISTROLESS_TAG} istio/operator:${VARIANT_DISTROLESS_TAG}"
-        sh "docker tag istio/proxyv2:${env.DISTROLESS_TAG} istio/proxyv2:${VARIANT_DISTROLESS_TAG}"
+        script {
+          sh "echo TAG=${env.TAG} DISTROLESS_TAG=${env.DISTROLESS_TAG} VARIANT_DISTRO_TAG=${env.VARIANT_DISTRO_TAG} VARIANT_DISTROLESS_TAG=${env.VARIANT_DISTROLESS_TAG}"
+          ["istio/pilot", "istio/operator", "istio/proxyv2"].each { name ->
+            // Rebuild images to add LABEL layers on top
+            sh "echo 'FROM ${name}:${env.TAG}' | docker build ${getDockerBuildArgs(name: name, version: env.TAG, mountNetRC: false)} -t '${name}:${env.VARIANT_DISTRO_TAG}' -"
+            sh "echo 'FROM ${name}:${env.DISTROLESS_TAG}' | docker build ${getDockerBuildArgs(name: name, version: env.DISTROLESS_TAG, mountNetRC: false)} -t '${name}:${env.VARIANT_DISTROLESS_TAG}' -"
+          }
+        }
       }
     }
 
